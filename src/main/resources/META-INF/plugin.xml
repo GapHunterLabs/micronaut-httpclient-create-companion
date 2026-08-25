@@ -1,0 +1,43 @@
+<!-- Plugin Configuration File. Read more: https://plugins.jetbrains.com/docs/intellij/plugin-configuration-file.html -->
+<idea-plugin>
+    <id>dev.gaphunter.micronauthttpclientcreatecompanion</id>
+    <name>Micronaut HttpClient Create Companion</name>
+    <vendor>Gap Hunter Labs</vendor>
+    <description><![CDATA[
+        <p>Warning icon on a Micronaut <code>HttpClient.create(...)</code>
+        static factory call found anywhere in application code -- the
+        javadoc for this exact method is explicit: "this method should
+        only be used outside the context of a Micronaut application" and
+        "Within a Micronaut application use @Inject to inject a client
+        instead", adding that "the creator is responsible for closing the
+        client to avoid leaking connections" when using this factory.</p>
+        <p><b>100% static text/PSI analysis</b> -- matches the class/
+        method name by simple text, so it works whether the real
+        Micronaut jar is on the classpath or not. Java and Kotlin.
+        Confirmed gap: JetBrains' own bundled Micronaut plugin has 8 real
+        inspections (Micronaut Data, cache, EL, injection points, config)
+        -- none cover this specific factory-method misuse.</p>
+        <p>Stated honestly: v0.1 matches by simple name, not real type
+        resolution -- an unrelated <code>HttpClient.create(...)</code>
+        from a different library is a possible (rare) false positive.
+        Flags every occurrence unconditionally, since the javadoc's own
+        guidance is unconditional for code living inside the app.</p>
+        <p>Free. No license nags, no telemetry, no network calls.</p>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+    <extensions defaultExtensionNs="org.jetbrains.kotlin">
+        <supportsKotlinPluginMode supportsK1="true" supportsK2="true"/>
+    </extensions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <codeInsight.lineMarkerProvider language="JAVA"
+            implementationClass="dev.gaphunter.micronauthttpclientcreatecompanion.gutter.ClientCreateLineMarkerProvider"/>
+        <codeInsight.lineMarkerProvider language="kotlin"
+            implementationClass="dev.gaphunter.micronauthttpclientcreatecompanion.gutter.ClientCreateLineMarkerProvider"/>
+        <notificationGroup id="Micronaut HttpClient Create Companion" displayType="BALLOON"/>
+    </extensions>
+</idea-plugin>
