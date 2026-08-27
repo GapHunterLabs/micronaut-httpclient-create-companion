@@ -50,7 +50,7 @@ object JavaClientCreateFinder {
         return ClientCreateHit(leafOf(call))
     }
 
-    /** Descends to a real leaf PSI element -- LineMarkerInfo must never anchor on a composite node (SDK_GOTCHAS.md SS20). */
+    /** Descends to a real leaf PSI element -- LineMarkerInfo must never anchor on a composite node. */
     private fun leafOf(element: PsiElement): PsiElement {
         var current = element
         while (current.firstChild != null) current = current.firstChild
